@@ -10,7 +10,8 @@
         :root {
             --primary-color: #5D5FEF;
             --secondary-color: #F26B7A;
-            --teacher-header-bg: linear-gradient(135deg, #a8ff78 0%, #78ffd6 100%);
+            /* -- NEW: Calm Blue Gradient for Teacher Header -- */
+            --teacher-header-bg: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
             --background-color: #f5f7fa;
             --card-color: #ffffff;
             --text-color: #34495e;
@@ -22,19 +23,20 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         .container { max-width: 900px; margin: auto; }
 
-        /* --- Teacher Form & Buttons --- */
         #data-entry-form { background-color: var(--card-color); padding: 0; border-radius: 1.5rem; box-shadow: var(--shadow); margin-bottom: 3rem; overflow: hidden; }
         #form-header { background-image: var(--teacher-header-bg); padding: 2rem; text-align: center; margin-bottom: 2.5rem; }
         #form-header h2 { font-weight: 700; margin: 0 0 0.25rem 0; font-size: 1.8rem; color: #2c3e50; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
         #form-header p { margin: 0; font-size: 1.1rem; color: #2c3e50; opacity: 0.9; }
+        
         .form-grid-container { padding: 0 2.5rem; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: left; }
         .input-group { display: flex; flex-direction: column; }
         .input-group label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .input-group input, .input-group select { padding: 0.8rem 1rem; border: 1px solid #dcdfe6; border-radius: 0.5rem; font-size: 1rem; transition: all 0.2s; font-family: 'Poppins', sans-serif; background-color: white; }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(93, 95, 239, 0.2); }
-        /* -- NEW: Time Selector Group -- */
+        /* -- NEW: Time Selector Group with Clock + AM/PM -- */
         .time-selector { display: flex; gap: 0.5rem; }
+        .time-selector input[type="time"] { flex-grow: 2; }
         .time-selector select { flex-grow: 1; }
 
         .form-actions { display: flex; justify-content: center; gap: 1rem; padding: 2.5rem; flex-wrap: wrap; }
@@ -44,7 +46,6 @@
         #teacher-share-btn { background-color: var(--success-color); color: white; }
         #teacher-share-btn:hover { background-color: #2ecc71; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); }
 
-        /* --- Student Poster --- */
         #poster { border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow); background-color: var(--card-color); }
         .poster-header { background-image: var(--header-bg); color: white; text-align: center; padding: 4rem 2rem; }
         .poster-header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 0 0 0.5rem 0; }
@@ -80,7 +81,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- TEACHER DATA ENTRY FORM -->
         <div id="data-entry-form">
             <div id="form-header">
                 <h2>Welcome Back my dear friend Dorina !</h2>
@@ -90,12 +90,10 @@
                 <div class="form-grid">
                     <div class="input-group"><label for="date">Date</label><input type="date" id="date"></div>
                     <div class="input-group"><label for="day">Day</label><input type="text" id="day" placeholder="Auto-filled" readonly></div>
-                    <!-- NEW: Time Selector -->
                     <div class="input-group">
-                        <label for="time-hour">Time</label>
+                        <label for="time">Time</label>
                         <div class="time-selector">
-                            <select id="time-hour"></select>
-                            <select id="time-minute"></select>
+                            <input type="time" id="time">
                             <select id="time-ampm">
                                 <option value="AM">AM</option>
                                 <option value="PM">PM</option>
@@ -109,12 +107,10 @@
             </div>
             <div class="form-actions">
                 <button id="addSession" class="button button-primary">Add Session</button>
-                <!-- NEW: Renamed Share Button -->
                 <button id="teacher-share-btn" class="button">Share Schedule</button>
             </div>
         </div>
 
-        <!-- STUDENT INVITATION POSTER -->
         <div id="poster">
             <div class="poster-header" contenteditable="true">
                 <h1 id="poster-title">Class Schedule</h1>
@@ -137,27 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataEntryForm = document.getElementById('data-entry-form');
     const dateInput = document.getElementById('date');
     const dayInput = document.getElementById('day');
-    
-    // NEW: Time selector elements
-    const hourSelect = document.getElementById('time-hour');
-    const minuteSelect = document.getElementById('time-minute');
+    const timeInput = document.getElementById('time');
     const ampmSelect = document.getElementById('time-ampm');
 
     const isStudentView = new URLSearchParams(window.location.search).get('view') === 'student';
-    
-    // --- NEW: Populate Time Selectors ---
-    for (let i = 1; i <= 12; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = String(i).padStart(2, '0');
-        hourSelect.appendChild(option);
-    }
-    for (let i = 0; i < 60; i += 5) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = String(i).padStart(2, '0');
-        minuteSelect.appendChild(option);
-    }
 
     dateInput.addEventListener('change', () => {
         if (dateInput.value) {
@@ -238,12 +217,71 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     addSessionBtn.addEventListener('click', () => {
-        const hour = hourSelect.value.padStart(2, '0');
-        const minute = minuteSelect.value.padStart(2, '0');
-        const ampm = ampmSelect.value;
-        const formattedTime = `${hour}:${minute} ${ampm}`;
+        const timeValue = timeInput.value;
+        let formattedTime = 'TBA';
+        if (timeValue) {
+            let [hours, minutes] = timeValue.split(':');
+            hours = parseInt(hours, 10);
+            
+            // Convert 24-hour from picker to 12-hour for display
+            const ampm = ampmSelect.value;
+            if (ampm === 'PM' && hours < 12) {
+                // No change needed for PM unless it's 12 PM
+            } else if (ampm === 'AM' && hours >= 12) {
+                // No change needed for AM unless it's 12 AM
+            }
+            
+            // Use the AM/PM selector's value directly
+            let displayHours = hours > 12 ? hours - 12 : hours;
+            if (displayHours === 0) displayHours = 12; // Midnight case
 
+            formattedTime = `${String(displayHours).padStart(2, '0')}:${minutes} ${ampm}`;
+        }
+        
         createCard(
             dataEntryForm.querySelector('#date').value,
             formattedTime,
-            dataEntryForm.querySelector('
+            dataEntryForm.querySelector('#day').value,
+            dataEntryForm.querySelector('#subject').value,
+            dataEntryForm.querySelector('#topic').value,
+            dataEntryForm.querySelector('#link').value
+        );
+        dataEntryForm.querySelectorAll('input').forEach(input => input.value = '');
+    });
+
+    teacherShareBtn.addEventListener('click', async () => {
+        const studentURL = new URL(window.location.href);
+        studentURL.searchParams.set('view', 'student');
+        try {
+            await navigator.share({ title: poster.querySelector('h1').textContent, text: "Here is our class schedule!", url: studentURL.href });
+        } catch (err) {
+            navigator.clipboard.writeText(studentURL.href);
+            alert("Student link copied to clipboard! You can now paste it to share.");
+        }
+    });
+
+    studentSaveBtn.addEventListener('click', () => {
+        const pageHTML = document.documentElement.outerHTML;
+        const blob = new Blob([pageHTML], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'class-schedule.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    poster.querySelectorAll('[contenteditable="true"]').forEach(el => el.addEventListener('blur', saveData));
+
+    if (isStudentView) {
+        document.body.classList.add('student-view');
+        document.querySelectorAll('[contenteditable]').forEach(el => el.setAttribute('contenteditable', 'false'));
+    }
+
+    loadData();
+});
+</script>
+</body>
+</html>
