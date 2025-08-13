@@ -7,47 +7,48 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
+        /* -- NEW: Pastel Color Palette -- */
         :root {
-            --primary-color: #5D5FEF;
-            --secondary-color: #F26B7A;
-            --teacher-header-bg: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            --primary-color: #778BEB;   /* Pastel Blue */
+            --secondary-color: #F3A683; /* Pastel Coral */
+            --teacher-header-bg: #A7D7C5; /* Pastel Mint */
+            --header-bg: #E4D8DC;       /* Pastel Lavender */
+            --success-color: #55E6C1;   /* Pastel Green */
             --background-color: #f5f7fa;
             --card-color: #ffffff;
             --text-color: #34495e;
-            --header-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-            --success-color: #27ae60;
         }
 
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         .container { max-width: 900px; margin: auto; }
 
         #data-entry-form { background-color: var(--card-color); padding: 0; border-radius: 1.5rem; box-shadow: var(--shadow); margin-bottom: 3rem; overflow: hidden; }
-        #form-header { background-image: var(--teacher-header-bg); padding: 2rem; text-align: center; margin-bottom: 2.5rem; }
-        #form-header h2 { font-weight: 700; margin: 0 0 0.25rem 0; font-size: 1.8rem; color: #2c3e50; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
+        #form-header { background-color: var(--teacher-header-bg); padding: 2rem; text-align: center; margin-bottom: 2.5rem; }
+        #form-header h2 { font-weight: 700; margin: 0 0 0.25rem 0; font-size: 1.8rem; color: #2c3e50; }
         #form-header p { margin: 0; font-size: 1.1rem; color: #2c3e50; opacity: 0.9; }
+        
         .form-grid-container { padding: 0 2.5rem; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: left; }
         .input-group { display: flex; flex-direction: column; }
         .input-group label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .input-group input, .input-group select { padding: 0.8rem 1rem; border: 1px solid #dcdfe6; border-radius: 0.5rem; font-size: 1rem; transition: all 0.2s; font-family: 'Poppins', sans-serif; background-color: white; }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(93, 95, 239, 0.2); }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(119, 139, 235, 0.3); }
         .time-selector { display: flex; gap: 0.5rem; }
         .time-selector input[type="time"] { flex-grow: 2; }
         .time-selector select { flex-grow: 1; }
         .form-actions { display: flex; justify-content: center; gap: 1rem; padding: 2.5rem; flex-wrap: wrap; }
         .button { padding: 0.8rem 1.5rem; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem; }
         .button-primary { background-color: var(--primary-color); color: white; }
-        .button-primary:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(93, 95, 239, 0.4); }
-        #teacher-share-btn { background-color: var(--success-color); color: white; }
-        #teacher-share-btn:hover { background-color: #2ecc71; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); }
+        .button-primary:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(119, 139, 235, 0.4); }
+        #teacher-share-btn { background-color: var(--success-color); color: #2c3e50; }
+        #teacher-share-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(85, 230, 193, 0.5); }
 
         #poster { border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow); background-color: var(--card-color); }
-        .poster-header { background-image: var(--header-bg); color: white; text-align: center; padding: 4rem 2rem; }
+        .poster-header { background-color: var(--header-bg); color: white; text-align: center; padding: 4rem 2rem; }
         .poster-header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 0 0 0.5rem 0; }
         .poster-header p { font-size: 1.25rem; opacity: 0.9; margin: 0; }
         .schedule-list { padding: 2rem; display: grid; gap: 1.5rem; }
-        /* -- REFINED: Card Layout -- */
         .schedule-card { display: grid; grid-template-areas: "date details action"; grid-template-columns: auto 1fr auto; background-color: #fdfdfd; border: 1px solid #f0f0f0; border-radius: 1rem; position: relative; }
         .card-date-day { grid-area: date; text-align: center; border-right: 1px solid #f0f0f0; padding: 1.5rem; min-width: 90px; display: flex; flex-direction: column; justify-content: center; }
         .card-date-day .date { font-size: 0.9rem; font-weight: 600; color: var(--secondary-color); white-space: nowrap; }
@@ -57,8 +58,8 @@
         .card-details p { margin: 0; opacity: 0.8; }
         .card-details .time { font-size: 1rem; font-weight: 600; margin-top: 0.75rem; color: #34495e; }
         .card-action { grid-area: action; display: flex; align-items: center; padding: 1.5rem; }
-        .card-action a { display: inline-block; background-color: var(--success-color); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.2s ease; }
-        .card-action a:hover { background-color: #239152; transform: scale(1.05); }
+        .card-action a { display: inline-block; background-color: var(--success-color); color: #2c3e50; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.2s ease; }
+        .card-action a:hover { transform: scale(1.05); }
         .delete-btn { position: absolute; top: 10px; right: 10px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
         .schedule-card:hover .delete-btn { opacity: 1; }
         .poster-footer { padding: 2rem; text-align: center; }
@@ -221,17 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let [hours, minutes] = timeValue.split(':');
             hours = parseInt(hours, 10);
             
-            // Convert hours from 24-hour picker to 12-hour format based on AM/PM selector
-            const ampm = ampmSelect.value;
-            if (ampm === 'PM' && hours < 12) {
-                hours += 12;
-            } else if (ampm === 'AM' && hours === 12) { // Midnight case
-                hours = 0;
-            }
-
-            // Now format back to 12-hour display string
-            const displayHours = hours % 12 || 12;
-            formattedTime = `${String(displayHours).padStart(2, '0')}:${minutes} ${ampm}`;
+            // Convert 24-hour picker to 12-hour format string
+            let displayHours = hours % 12 || 12; // Converts 0 and 12 to 12
+            formattedTime = `${String(displayHours).padStart(2, '0')}:${minutes} ${ampmSelect.value}`;
         }
         
         createCard(
@@ -242,9 +235,13 @@ document.addEventListener('DOMContentLoaded', () => {
             dataEntryForm.querySelector('#topic').value,
             dataEntryForm.querySelector('#link').value
         );
-        dataEntryForm.querySelectorAll('input').forEach(input => {
+        dataEntryForm.querySelectorAll('input, select').forEach(input => {
             if(input.type !== 'text' || !input.readOnly) {
-                input.value = '';
+                if (input.type === 'select-one') {
+                    input.selectedIndex = 0;
+                } else {
+                    input.value = '';
+                }
             }
         });
     });
