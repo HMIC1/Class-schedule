@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ============== TEACHER'S NOTE ============== -->
-    <!-- To edit, go to this file on your GitHub. Click the pencil icon. -->
-    <!-- To add a new session, copy an entire '<tr>' block and paste it below the others. -->
-    <!-- Then, edit the content inside the new '<tr>' block and commit your changes. -->
-    <title>Class Schedule</title>
+    <title>Class Schedule Creator</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
         :root {
             --primary-color: #5D5FEF;
             --secondary-color: #F26B7A;
+            --teacher-header-bg: linear-gradient(135deg, #a8ff78 0%, #78ffd6 100%);
             --background-color: #f5f7fa;
             --card-color: #ffffff;
             --text-color: #34495e;
@@ -25,6 +22,25 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         .container { max-width: 900px; margin: auto; }
 
+        /* --- Teacher Form & Buttons --- */
+        #data-entry-form { background-color: var(--card-color); padding: 0; border-radius: 1.5rem; box-shadow: var(--shadow); margin-bottom: 3rem; overflow: hidden; }
+        #form-header { background-image: var(--teacher-header-bg); padding: 2rem; text-align: center; margin-bottom: 2.5rem; }
+        #form-header h2 { font-weight: 700; margin: 0 0 0.25rem 0; font-size: 1.8rem; color: #2c3e50; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
+        #form-header p { margin: 0; font-size: 1.1rem; color: #2c3e50; opacity: 0.9; }
+        .form-grid-container { padding: 0 2.5rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: left; }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .input-group input { padding: 0.8rem 1rem; border: 1px solid #dcdfe6; border-radius: 0.5rem; font-size: 1rem; transition: all 0.2s; }
+        .input-group input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(93, 95, 239, 0.2); }
+        .form-actions { display: flex; justify-content: center; gap: 1rem; padding: 2.5rem; flex-wrap: wrap; }
+        .button { padding: 0.8rem 1.5rem; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .button-primary { background-color: var(--primary-color); color: white; }
+        .button-primary:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(93, 95, 239, 0.4); }
+        #teacher-share-btn { background-color: var(--success-color); color: white; }
+        #teacher-share-btn:hover { background-color: #2ecc71; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); }
+
+        /* --- Student Poster --- */
         #poster { border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow); background-color: var(--card-color); }
         .poster-header { background-image: var(--header-bg); color: white; text-align: center; padding: 4rem 2rem; }
         .poster-header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 0 0 0.5rem 0; }
@@ -41,7 +57,14 @@
         .card-action { display: flex; align-items: center; padding: 1.5rem; }
         .card-action a { display: inline-block; background-color: var(--success-color); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.2s ease; }
         .card-action a:hover { background-color: #239152; transform: scale(1.05); }
-        
+        .delete-btn { position: absolute; top: 10px; right: 10px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .schedule-card:hover .delete-btn { opacity: 1; }
+        .poster-footer { padding: 2rem; text-align: center; }
+        #student-save-btn { display: none; }
+
+        .student-view #data-entry-form, .student-view .delete-btn { display: none; }
+        .student-view #student-save-btn { display: inline-flex; }
+
         @media (max-width: 768px) {
             body { padding: 1rem; }
             .schedule-card { flex-direction: column; text-align: center; }
@@ -53,52 +76,187 @@
 </head>
 <body>
     <div class="container">
+        <!-- TEACHER DATA ENTRY FORM -->
+        <div id="data-entry-form">
+            <div id="form-header">
+                <h2>Welcome Back my dear friend Dorina !</h2>
+                <p>Your live schedule Creator is here</p>
+            </div>
+            <div class="form-grid-container">
+                <div class="form-grid">
+                    <div class="input-group"><label for="date">Date</label><input type="date" id="date"></div>
+                    <div class="input-group"><label for="day">Day</label><input type="text" id="day" placeholder="Auto-filled" readonly></div>
+                    <div class="input-group"><label for="time">Time</label><input type="time" id="time"></div>
+                    <div class="input-group"><label for="subject">Subject</label><input type="text" id="subject" placeholder="e.g., Physics"></div>
+                    <div class="input-group"><label for="topic">Topic</label><input type="text" id="topic" placeholder="e.g., Quantum Mechanics"></div>
+                    <div class="input-group"><label for="link">Meeting Link</label><input type="url" id="link" placeholder="https://..."></div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button id="addSession" class="button button-primary">Add Session</button>
+                <button id="teacher-share-btn" class="button">Share Student Link</button>
+            </div>
+        </div>
+
         <!-- STUDENT INVITATION POSTER -->
         <div id="poster">
-            <div class="poster-header">
-                <h1>Class Schedule</h1>
+            <div class="poster-header" contenteditable="true">
+                <h1 id="poster-title">Class Schedule</h1>
                 <p>Your guide to this week's sessions.</p>
             </div>
-            <div id="schedule-list" class="schedule-list">
-                
-                <!-- ============== TEACHER: EDIT SESSIONS BELOW ============== -->
-                
-                <!-- Session 1: Copy this entire block to add a new session -->
-                <div class="schedule-card">
-                    <div class="card-date-day">
-                        <div class="date">Sep 10, 2025</div>
-                        <div class="day-name">Welcome!</div>
-                    </div>
-                    <div class="card-details">
-                        <h3>This is your first session</h3>
-                        <p>How to use this schedule</p>
-                        <div class="time">10:00 AM</div>
-                    </div>
-                    <div class="card-action">
-                        <a href="https://example.com" target="_blank">Join Class</a>
-                    </div>
-                </div>
-
-                <!-- Session 2: Example -->
-                <div class="schedule-card">
-                    <div class="card-date-day">
-                        <div class="date">Sep 11, 2025</div>
-                        <div class="day-name">Thursday</div>
-                    </div>
-                    <div class="card-details">
-                        <h3>Advanced Physics</h3>
-                        <p>Introduction to Relativity</p>
-                        <div class="time">02:30 PM</div>
-                    </div>
-                    <div class="card-action">
-                        <a href="#" target="_blank">Join Class</a>
-                    </div>
-                </div>
-
-                <!-- Add more sessions by pasting copies of the block above -->
-
+            <div id="schedule-list" class="schedule-list"></div>
+            <div class="poster-footer">
+                <button id="student-save-btn" class="button button-primary">Save for Offline</button>
             </div>
         </div>
     </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const scheduleList = document.getElementById('schedule-list');
+    const poster = document.getElementById('poster');
+    const addSessionBtn = document.getElementById('addSession');
+    const teacherShareBtn = document.getElementById('teacher-share-btn');
+    const studentSaveBtn = document.getElementById('student-save-btn');
+    const dataEntryForm = document.getElementById('data-entry-form');
+    const dateInput = document.getElementById('date');
+    const dayInput = document.getElementById('day');
+
+    const isStudentView = new URLSearchParams(window.location.search).get('view') === 'student';
+
+    dateInput.addEventListener('change', () => {
+        if (dateInput.value) {
+            const date = new Date(dateInput.value + 'T00:00:00');
+            const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+            dayInput.value = dayOfWeek;
+        } else {
+            dayInput.value = '';
+        }
+    });
+
+    const formatTime12Hour = (time) => {
+        if (!time) return 'TBA';
+        let [hours, minutes] = time.split(':');
+        const ampm = parseInt(hours, 10) >= 12 ? 'PM' : 'AM';
+        hours = parseInt(hours, 10) % 12 || 12;
+        return `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+    };
+
+    const saveData = () => {
+        if (isStudentView) return;
+        const scheduleData = {
+            title: poster.querySelector('h1').innerHTML,
+            subtitle: poster.querySelector('p').innerHTML,
+            sessions: Array.from(scheduleList.querySelectorAll('.schedule-card')).map(card => ({
+                date: card.dataset.date,
+                time: card.dataset.time,
+                day: card.querySelector('.day-name').textContent,
+                subject: card.querySelector('h3').textContent,
+                topic: card.querySelector('.card-details p').textContent,
+                link: card.querySelector('a').href
+            }))
+        };
+        localStorage.setItem('liveScheduleData', JSON.stringify(scheduleData));
+    };
+
+    const loadData = () => {
+        const savedData = localStorage.getItem('liveScheduleData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            if (data.title) poster.querySelector('h1').innerHTML = data.title;
+            if (data.subtitle) poster.querySelector('p').innerHTML = data.subtitle;
+            scheduleList.innerHTML = '';
+            if (data.sessions && data.sessions.length > 0) {
+                 data.sessions.forEach(s => createCard(s.date, s.time, s.day, s.subject, s.topic, s.link, false));
+            } else {
+                 createCard('2025-09-10', '10:00', 'Welcome!', 'This is your first session', 'How to use this schedule', 'https://example.com', false);
+            }
+        } else {
+             createCard('2025-09-10', '10:00', 'Welcome!', 'This is your first session', 'How to use this schedule', 'https://example.com', false);
+        }
+    };
+
+    const createCard = (date, time, day, subject, topic, link, shouldSave = true) => {
+        const card = document.createElement('div');
+        card.className = 'schedule-card';
+        card.dataset.date = date || '';
+        card.dataset.time = time || '';
+        
+        let formattedDate = '';
+        if (date) {
+            try {
+                const d = new Date(date + 'T00:00:00');
+                formattedDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) { console.error("Invalid date:", date); }
+        }
+        const formattedTime = formatTime12Hour(time);
+
+        card.innerHTML = `
+            <div class="card-date-day">
+                <div class="date">${formattedDate}</div>
+                <div class="day-name" contenteditable="true">${day||'TBA'}</div>
+            </div>
+            <div class="card-details">
+                <h3 contenteditable="true">${subject||'No Subject'}</h3>
+                <p contenteditable="true">${topic||'No Topic'}</p>
+                <div class="time">${formattedTime}</div>
+            </div>
+            <div class="card-action">
+                <a href="${link||'#'}" target="_blank" contenteditable="true">Join Class</a>
+            </div>
+            <button class="delete-btn" title="Delete Session">×</button>`;
+        
+        scheduleList.appendChild(card);
+        card.querySelector('.delete-btn').addEventListener('click', () => { card.remove(); saveData(); });
+        card.querySelectorAll('[contenteditable="true"]').forEach(el => el.addEventListener('blur', saveData));
+        if (shouldSave) saveData();
+    };
+
+    addSessionBtn.addEventListener('click', () => {
+        createCard(
+            dataEntryForm.querySelector('#date').value,
+            dataEntryForm.querySelector('#time').value,
+            dataEntryForm.querySelector('#day').value,
+            dataEntryForm.querySelector('#subject').value,
+            dataEntryForm.querySelector('#topic').value,
+            dataEntryForm.querySelector('#link').value
+        );
+        dataEntryForm.querySelectorAll('input').forEach(input => input.value = '');
+    });
+
+    teacherShareBtn.addEventListener('click', async () => {
+        const studentURL = new URL(window.location.href);
+        studentURL.searchParams.set('view', 'student');
+        try {
+            await navigator.share({ title: poster.querySelector('h1').textContent, text: "Here is our class schedule!", url: studentURL.href });
+        } catch (err) {
+            navigator.clipboard.writeText(studentURL.href);
+            alert("Student link copied to clipboard! You can now paste it to share.");
+        }
+    });
+
+    studentSaveBtn.addEventListener('click', () => {
+        const pageHTML = document.documentElement.outerHTML;
+        const blob = new Blob([pageHTML], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'class-schedule.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    poster.querySelectorAll('[contenteditable="true"]').forEach(el => el.addEventListener('blur', saveData));
+
+    if (isStudentView) {
+        document.body.classList.add('student-view');
+        document.querySelectorAll('[contenteditable]').forEach(el => el.setAttribute('contenteditable', 'false'));
+    }
+
+    loadData();
+});
+</script>
 </body>
-  </html>
+</html>
