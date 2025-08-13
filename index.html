@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Schedule Creator</title>
+    <title>Fitness Class Creator</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
-        /* -- NEW: Pastel Color Palette -- */
         :root {
             --primary-color: #778BEB;   /* Pastel Blue */
             --secondary-color: #F3A683; /* Pastel Coral */
-            --teacher-header-bg: #A7D7C5; /* Pastel Mint */
+            /* -- NEW: Calm Cerulean Blue for Teacher Header -- */
+            --teacher-header-bg: #A2D2FF; 
             --header-bg: #E4D8DC;       /* Pastel Lavender */
             --success-color: #55E6C1;   /* Pastel Green */
             --background-color: #f5f7fa;
@@ -23,12 +23,40 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         .container { max-width: 900px; margin: auto; }
 
-        #data-entry-form { background-color: var(--card-color); padding: 0; border-radius: 1.5rem; box-shadow: var(--shadow); margin-bottom: 3rem; overflow: hidden; }
-        #form-header { background-color: var(--teacher-header-bg); padding: 2rem; text-align: center; margin-bottom: 2.5rem; }
+        /* -- REFINED: Header Spacing -- */
+        #form-header {
+            background-color: var(--teacher-header-bg);
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
         #form-header h2 { font-weight: 700; margin: 0 0 0.25rem 0; font-size: 1.8rem; color: #2c3e50; }
         #form-header p { margin: 0; font-size: 1.1rem; color: #2c3e50; opacity: 0.9; }
         
-        .form-grid-container { padding: 0 2.5rem; }
+        #welcome-card {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1.5rem auto -1rem; /* Negative margin to slightly overlap */
+            max-width: 400px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: slideAndFade 5.5s ease-in-out forwards;
+            animation-delay: 0.5s;
+        }
+        @keyframes slideAndFade {
+            0% { transform: translateY(-20px); opacity: 0; }
+            10% { transform: translateY(0); opacity: 1; }
+            90% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
+        
+        #data-entry-form { background-color: var(--card-color); padding: 2.5rem; border-radius: 1.5rem; box-shadow: var(--shadow); margin-bottom: 3rem; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: left; }
         .input-group { display: flex; flex-direction: column; }
         .input-group label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
@@ -37,7 +65,7 @@
         .time-selector { display: flex; gap: 0.5rem; }
         .time-selector input[type="time"] { flex-grow: 2; }
         .time-selector select { flex-grow: 1; }
-        .form-actions { display: flex; justify-content: center; gap: 1rem; padding: 2.5rem; flex-wrap: wrap; }
+        .form-actions { display: flex; justify-content: center; gap: 1rem; padding-top: 2.5rem; flex-wrap: wrap; }
         .button { padding: 0.8rem 1.5rem; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem; }
         .button-primary { background-color: var(--primary-color); color: white; }
         .button-primary:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(119, 139, 235, 0.4); }
@@ -65,7 +93,7 @@
         .poster-footer { padding: 2rem; text-align: center; }
         #student-save-btn { display: none; }
 
-        .student-view #data-entry-form, .student-view .delete-btn { display: none; }
+        .student-view #form-header, .student-view #data-entry-form, .student-view .delete-btn { display: none; }
         .student-view #student-save-btn { display: inline-flex; }
 
         @media (max-width: 768px) {
@@ -80,29 +108,30 @@
 </head>
 <body>
     <div class="container">
+        <div id="form-header">
+            <h2>Welcome Back my dear friend Dorina !</h2>
+            <p>Your live schedule Creator is here</p>
+            <div id="welcome-card">I wish you all the best, Always be Happy :)</div>
+        </div>
+        
         <div id="data-entry-form">
-            <div id="form-header">
-                <h2>Welcome Back my dear friend Dorina !</h2>
-                <p>Your live schedule Creator is here</p>
-            </div>
-            <div class="form-grid-container">
-                <div class="form-grid">
-                    <div class="input-group"><label for="date">Date</label><input type="date" id="date"></div>
-                    <div class="input-group"><label for="day">Day</label><input type="text" id="day" placeholder="Auto-filled" readonly></div>
-                    <div class="input-group">
-                        <label for="time">Time</label>
-                        <div class="time-selector">
-                            <input type="time" id="time">
-                            <select id="time-ampm">
-                                <option value="AM">AM</option>
-                                <option value="PM">PM</option>
-                            </select>
-                        </div>
+            <div class="form-grid">
+                <div class="input-group"><label for="date">Date</label><input type="date" id="date"></div>
+                <div class="input-group"><label for="day">Day</label><input type="text" id="day" placeholder="Auto-filled" readonly></div>
+                <div class="input-group">
+                    <label for="time">Time</label>
+                    <div class="time-selector">
+                        <input type="time" id="time">
+                        <select id="time-ampm">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
                     </div>
-                    <div class="input-group"><label for="subject">Subject</label><input type="text" id="subject" placeholder="e.g., Physics"></div>
-                    <div class="input-group"><label for="topic">Topic</label><input type="text" id="topic" placeholder="e.g., Quantum Mechanics"></div>
-                    <div class="input-group"><label for="link">Meeting Link</label><input type="url" id="link" placeholder="https://..."></div>
                 </div>
+                <!-- NEW: Fitness-Optimized Labels -->
+                <div class="input-group"><label for="class-type">Class Type</label><input type="text" id="class-type" placeholder="e.g., Yoga, HIIT"></div>
+                <div class="input-group"><label for="focus-of-day">Focus of the Day</label><input type="text" id="focus-of-day" placeholder="e.g., Core Strength"></div>
+                <div class="input-group"><label for="link">Meeting Link</label><input type="url" id="link" placeholder="https://..."></div>
             </div>
             <div class="form-actions">
                 <button id="addSession" class="button button-primary">Add Session</button>
@@ -112,7 +141,7 @@
 
         <div id="poster">
             <div class="poster-header" contenteditable="true">
-                <h1 id="poster-title">Class Schedule</h1>
+                <h1 id="poster-title">Fitness Schedule</h1>
                 <p>Your guide to this week's sessions.</p>
             </div>
             <div id="schedule-list" class="schedule-list"></div>
@@ -134,8 +163,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const dayInput = document.getElementById('day');
     const timeInput = document.getElementById('time');
     const ampmSelect = document.getElementById('time-ampm');
+    const welcomeCard = document.getElementById('welcome-card');
 
     const isStudentView = new URLSearchParams(window.location.search).get('view') === 'student';
+
+    if (isStudentView || sessionStorage.getItem('welcomeShown')) {
+        welcomeCard.style.display = 'none';
+    } else {
+        sessionStorage.setItem('welcomeShown', 'true');
+    }
 
     dateInput.addEventListener('change', () => {
         if (dateInput.value) {
@@ -155,8 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: card.dataset.date,
                 time: card.dataset.time,
                 day: card.querySelector('.day-name').textContent,
-                subject: card.querySelector('h3').textContent,
-                topic: card.querySelector('.card-details p').textContent,
+                classType: card.querySelector('h3').textContent,
+                focus: card.querySelector('.card-details p').textContent,
                 link: card.querySelector('a').href
             }))
         };
@@ -171,16 +207,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.subtitle) poster.querySelector('p').innerHTML = data.subtitle;
             scheduleList.innerHTML = '';
             if (data.sessions && data.sessions.length > 0) {
-                 data.sessions.forEach(s => createCard(s.date, s.time, s.day, s.subject, s.topic, s.link, false));
+                 data.sessions.forEach(s => createCard(s.date, s.time, s.day, s.classType, s.focus, s.link, false));
             } else {
-                 createCard('2025-09-10', '10:00 AM', 'Welcome!', 'This is your first session', 'How to use this schedule', 'https://example.com', false);
+                 createCard('2025-09-10', '10:00 AM', 'Welcome!', 'Your First Class', 'Learn the basics', 'https://example.com', false);
             }
         } else {
-             createCard('2025-09-10', '10:00 AM', 'Welcome!', 'This is your first session', 'How to use this schedule', 'https://example.com', false);
+             createCard('2025-09-10', '10:00 AM', 'Welcome!', 'Your First Class', 'Learn the basics', 'https://example.com', false);
         }
     };
 
-    const createCard = (date, time, day, subject, topic, link, shouldSave = true) => {
+    const createCard = (date, time, day, classType, focus, link, shouldSave = true) => {
         const card = document.createElement('div');
         card.className = 'schedule-card';
         card.dataset.date = date || '';
@@ -200,8 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="day-name" contenteditable="true">${day||'TBA'}</div>
             </div>
             <div class="card-details">
-                <h3 contenteditable="true">${subject||'No Subject'}</h3>
-                <p contenteditable="true">${topic||'No Topic'}</p>
+                <h3 contenteditable="true">${classType||'TBA'}</h3>
+                <p contenteditable="true">${focus||'TBA'}</p>
                 <div class="time">${time||'TBA'}</div>
             </div>
             <div class="card-action">
@@ -222,8 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let [hours, minutes] = timeValue.split(':');
             hours = parseInt(hours, 10);
             
-            // Convert 24-hour picker to 12-hour format string
-            let displayHours = hours % 12 || 12; // Converts 0 and 12 to 12
+            let displayHours = hours % 12 || 12;
             formattedTime = `${String(displayHours).padStart(2, '0')}:${minutes} ${ampmSelect.value}`;
         }
         
@@ -231,8 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
             dataEntryForm.querySelector('#date').value,
             formattedTime,
             dataEntryForm.querySelector('#day').value,
-            dataEntryForm.querySelector('#subject').value,
-            dataEntryForm.querySelector('#topic').value,
+            dataEntryForm.querySelector('#class-type').value,
+            dataEntryForm.querySelector('#focus-of-day').value,
             dataEntryForm.querySelector('#link').value
         );
         dataEntryForm.querySelectorAll('input, select').forEach(input => {
@@ -250,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const studentURL = new URL(window.location.href);
         studentURL.searchParams.set('view', 'student');
         try {
-            await navigator.share({ title: poster.querySelector('h1').textContent, text: "Here is our class schedule!", url: studentURL.href });
+            await navigator.share({ title: poster.querySelector('h1').textContent, text: "Here is our fitness class schedule!", url: studentURL.href });
         } catch (err) {
             navigator.clipboard.writeText(studentURL.href);
             alert("Student link copied to clipboard! You can now paste it to share.");
@@ -263,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'class-schedule.html';
+        a.download = 'fitness-schedule.html';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
