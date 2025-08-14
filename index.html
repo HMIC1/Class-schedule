@@ -1,318 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fitness Class Creator</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
-
-        :root {
---primary-color: #778BEB;   /* Pastel Blue /
---secondary-color: #F3A683; / Pastel Coral /
-/ -- NEW: Calm Cerulean Blue for Teacher Header -- /
---teacher-header-bg: #A2D2FF;
---header-bg: #E4D8DC;       / Pastel Lavender /
---success-color: #55E6C1;   / Pastel Green */
---background-color: #f5f7fa;
---card-color: #ffffff;
---text-color: #34495e;
---shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-}
-
-        body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        .container { max-width: 900px; margin: auto; }
-
-        /* -- REFINED: Header Spacing -- */
-        #form-header {
-            background-color: var(--teacher-header-bg);
-            padding: 2.5rem;
-            text-align: center;
-            border-radius: 1.5rem;
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-        }
-        #form-header h2 { font-weight: 700; margin: 0 0 0.25rem 0; font-size: 1.8rem; color: #2c3e50; }
-        #form-header p { margin: 0; font-size: 1.1rem; color: #2c3e50; opacity: 0.9; }
-        
-        #welcome-card {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 1rem;
-            border-radius: 1rem;
-            margin: 1.5rem auto -1rem; /* Negative margin to slightly overlap */
-            max-width: 400px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: slideAndFade 5.5s ease-in-out forwards;
-            animation-delay: 0.5s;
-        }
-        @keyframes slideAndFade {
-            0% { transform: translateY(-20px); opacity: 0; }
-            10% { transform: translateY(0); opacity: 1; }
-            90% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-20px); opacity: 0; }
-        }
-        
-        #data-entry-form { background-color: var(--card-color); padding: 2.5rem; border-radius: 1.5rem; box-shadow: var(--shadow); margin-bottom: 3rem; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: left; }
-        .input-group { display: flex; flex-direction: column; }
-        .input-group label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
-        .input-group input, .input-group select { padding: 0.8rem 1rem; border: 1px solid #dcdfe6; border-radius: 0.5rem; font-size: 1rem; transition: all 0.2s; font-family: 'Poppins', sans-serif; background-color: white; }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(119, 139, 235, 0.3); }
-        .time-selector { display: flex; gap: 0.5rem; }
-        .time-selector input[type="time"] { flex-grow: 2; }
-        .time-selector select { flex-grow: 1; }
-        .form-actions { display: flex; justify-content: center; gap: 1rem; padding-top: 2.5rem; flex-wrap: wrap; }
-        .button { padding: 0.8rem 1.5rem; border: none; border-radius: 0.75rem; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .button-primary { background-color: var(--primary-color); color: white; }
-        .button-primary:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(119, 139, 235, 0.4); }
-        #teacher-share-btn { background-color: var(--success-color); color: #2c3e50; }
-        #teacher-share-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(85, 230, 193, 0.5); }
-
-        #poster { border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow); background-color: var(--card-color); }
-        .poster-header { background-color: var(--header-bg); color: white; text-align: center; padding: 4rem 2rem; }
-        .poster-header h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; margin: 0 0 0.5rem 0; }
-        .poster-header p { font-size: 1.25rem; opacity: 0.9; margin: 0; }
-        .schedule-list { padding: 2rem; display: grid; gap: 1.5rem; }
-        .schedule-card { display: grid; grid-template-areas: "date details action"; grid-template-columns: auto 1fr auto; background-color: #fdfdfd; border: 1px solid #f0f0f0; border-radius: 1rem; position: relative; }
-        .card-date-day { grid-area: date; text-align: center; border-right: 1px solid #f0f0f0; padding: 1.5rem; min-width: 90px; display: flex; flex-direction: column; justify-content: center; }
-        .card-date-day .date { font-size: 0.9rem; font-weight: 600; color: var(--secondary-color); white-space: nowrap; }
-        .card-date-day .day-name { font-weight: 700; font-size: 1.2rem; color: var(--primary-color); margin-top: 0.25rem; }
-        .card-details { grid-area: details; padding: 1.5rem; text-align: left; }
-        .card-details h3 { margin: 0 0 0.25rem 0; font-size: 1.25rem; }
-        .card-details p { margin: 0; opacity: 0.8; }
-        .card-details .time { font-size: 1rem; font-weight: 600; margin-top: 0.75rem; color: #34495e; }
-        .card-action { grid-area: action; display: flex; align-items: center; padding: 1.5rem; }
-        .card-action a { display: inline-block; background-color: var(--success-color); color: #2c3e50; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.2s ease; }
-        .card-action a:hover { transform: scale(1.05); }
-        .delete-btn { position: absolute; top: 10px; right: 10px; background: #ff7675; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
-        .schedule-card:hover .delete-btn { opacity: 1; }
-        .poster-footer { padding: 2rem; text-align: center; }
-        #student-save-btn { display: none; }
-
-        .student-view #form-header, .student-view #data-entry-form, .student-view .delete-btn { display: none; }
-        .student-view #student-save-btn { display: inline-flex; }
-
-        @media (max-width: 768px) {
-            body { padding: 1rem; }
-            .schedule-card { grid-template-areas: "date" "details" "action"; grid-template-columns: 1fr; text-align: center; }
-            .card-date-day { border-right: none; border-bottom: 1px solid #f0f0f0; }
-            .card-details { text-align: center; }
-            .card-action { justify-content: center; }
-            .poster-header h1 { font-size: 2.5rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitness Class Creator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+  :root {
+    --primary-color: #ff512f;
+    --secondary-color: #ff6a00;
+    --teacher-header-gradient: linear-gradient(45deg, #00c6ff, #0072ff);
+    --header-gradient: linear-gradient(45deg, #8e2de2, #4a00e0);
+    --success-gradient: linear-gradient(45deg, #00b09b, #96c93d);
+    --background-gradient: linear-gradient(45deg, #fdfbfb, #ebedee);
+    --card-color: #ffffff;
+    --text-color: #34495e;
+    --shadow: 0 10px 35px rgba(0,0,0,0.08);
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--background-gradient); color: var(--text-color); margin:0; padding:2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .container { max-width:900px; margin:auto; }
+  #form-header { background: var(--teacher-header-gradient); padding:2.5rem; text-align:center; border-radius:1.5rem; box-shadow: var(--shadow); margin-bottom:2rem; color:white; }
+  #form-header h2 { font-weight:700; margin:0 0 0.25rem 0; font-size:1.8rem; }
+  #form-header p { margin:0; font-size:1.1rem; opacity:0.95; }
+  #welcome-card { background: linear-gradient(45deg,#6a11cb,#2575fc); color:white; padding:1rem; border-radius:1rem; margin:1.5rem auto -1rem; max-width:400px; font-weight:600; box-shadow:0 4px 15px rgba(0,0,0,0.1); opacity:0; transform: translateY(-20px); animation: slideFade 6s ease-in-out forwards; animation-delay:0.5s; text-align:center; }
+  @keyframes slideFade { 0%{transform:translateY(-20px);opacity:0;} 15%{transform:translateY(0);opacity:1;} 85%{transform:translateY(0);opacity:1;} 100%{transform:translateY(-20px);opacity:0;} }
+  #data-entry-form { background-color: var(--card-color); padding:2.5rem; border-radius:1.5rem; box-shadow: var(--shadow); margin-bottom:3rem; }
+  .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem; text-align:left; }
+  .input-group { display:flex; flex-direction:column; }
+  .input-group label { font-weight:600; margin-bottom:0.5rem; font-size:0.9rem; }
+  .input-group input, .input-group select { padding:0.8rem 1rem; border:1px solid #dcdfe6; border-radius:0.5rem; font-size:1rem; font-family:'Poppins',sans-serif; background-color:white; }
+  .input-group input:focus, .input-group select:focus { outline:none; border-color:var(--primary-color); box-shadow:0 0 0 3px rgba(255,81,47,0.3); }
+  .time-selector { display:flex; gap:0.5rem; }
+  .time-selector input[type="time"] { flex-grow:2; }
+  .time-selector select { flex-grow:1; }
+  .form-actions { display:flex; justify-content:center; gap:1rem; padding-top:2.5rem; flex-wrap:wrap; }
+  .button { padding:0.8rem 1.5rem; border:none; border-radius:0.75rem; font-weight:600; font-size:1rem; cursor:pointer; transition:all 0.2s ease; display:inline-flex; align-items:center; gap:0.5rem; }
+  .button-primary { background: linear-gradient(45deg,#ff512f,#dd2476); color:white; }
+  .button-primary:hover { transform:translateY(-3px); box-shadow:0 4px 15px rgba(255,81,47,0.4); }
+  #teacher-share-btn { background: var(--success-gradient); color:white; }
+  #teacher-share-btn:hover { transform:translateY(-3px); box-shadow:0 4px 15px rgba(0,176,155,0.5); }
+  #poster { border-radius:1.5rem; overflow:hidden; box-shadow: var(--shadow); background-color: var(--card-color); }
+  .poster-header { background: var(--header-gradient); color:white; text-align:center; padding:4rem 2rem; }
+  .poster-header h1 { font-family:'Playfair Display',serif; font-size:2.8rem; margin:0 0 0.5rem 0; }
+  .poster-header p { font-size:1.25rem; opacity:0.95; margin:0; }
+  .schedule-list { padding:2rem; display:grid; gap:1.5rem; }
+  .schedule-card { display:grid; grid-template-areas:"date details action"; grid-template-columns:auto 1fr auto; background-color:#fdfdfd; border:1px solid #f0f0f0; border-radius:1rem; position:relative; }
+  .card-date-day { grid-area:date; text-align:center; border-right:1px solid #f0f0f0; padding:1.5rem; min-width:90px; display:flex; flex-direction:column; justify-content:center; }
+  .card-date-day .date { font-size:0.9rem; font-weight:600; color:var(--secondary-color); white-space:nowrap; }
+  .card-date-day .day-name { font-weight:700; font-size:1.2rem; background:linear-gradient(45deg,#ff512f,#dd2476); -webkit-background-clip:text; background-clip:text; color:transparent; margin-top:0.25rem; }
+  .card-details { grid-area:details; padding:1.5rem; text-align:left; }
+  .card-details h3 { margin:0 0 0.25rem 0; font-size:1.25rem; }
+  .card-details p { margin:0; opacity:0.8; }
+  .card-details .time { font-size:1rem; font-weight:600; margin-top:0.75rem; color:#34495e; }
+  .card-action { grid-area:action; display:flex; align-items:center; padding:1.5rem; }
+  .card-action a { display:inline-block; background: var(--success-gradient); color:white; padding:0.75rem 1.5rem; border-radius:0.5rem; text-decoration:none; font-weight:600; white-space:nowrap; transition:all 0.2s ease; }
+  .card-action a:hover { transform:scale(1.05); }
+  .delete-btn { position:absolute; top:10px; right:10px; background:#ff512f; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; }
+  .schedule-card:hover .delete-btn { opacity:1; }
+  .poster-footer { padding:2rem; text-align:center; }
+  #student-save-btn { display:none; }
+  .student-view #form-header, .student-view #data-entry-form, .student-view .delete-btn { display: none; }
+  .student-view [contenteditable="true"] { pointer-events: none; }
+  .student-view #student-save-btn { display:inline-flex; }
+  @media(max-width:768px){ body{padding:1rem;} .schedule-card{grid-template-areas:"date" "details" "action"; grid-template-columns:1fr; text-align:center;} .card-date-day{border-right:none; border-bottom:1px solid #f0f0f0;} .card-details{text-align:center;} .card-action{justify-content:center;} .poster-header h1{font-size:2.5rem;} }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div id="form-header">
-            <h2>Welcome Back my dear friend Dorina !</h2>
-            <p>Your live schedule Creator is here</p>
-            <div id="welcome-card">I wish you all the best, Always be Happy :)</div>
-        </div>
-        
-        <div id="data-entry-form">
-            <div class="form-grid">
-                <div class="input-group"><label for="date">Date</label><input type="date" id="date"></div>
-                <div class="input-group"><label for="day">Day</label><input type="text" id="day" placeholder="Auto-filled" readonly></div>
-                <div class="input-group">
-                    <label for="time">Time</label>
-                    <div class="time-selector">
-                        <input type="time" id="time">
-                        <select id="time-ampm">
-                            <option value="AM">AM</option>
-                            <option value="PM">PM</option>
-                        </select>
-                    </div>
-                </div>
-                <!-- NEW: Fitness-Optimized Labels -->
-                <div class="input-group"><label for="class-type">Class Type</label><input type="text" id="class-type" placeholder="e.g., Yoga, HIIT"></div>
-                <div class="input-group"><label for="focus-of-day">Focus of the Day</label><input type="text" id="focus-of-day" placeholder="e.g., Core Strength"></div>
-                <div class="input-group"><label for="link">Meeting Link</label><input type="url" id="link" placeholder="https://..."></div>
-            </div>
-            <div class="form-actions">
-                <button id="addSession" class="button button-primary">Add Session</button>
-                <button id="teacher-share-btn" class="button">Share Schedule</button>
-            </div>
-        </div>
+<div class="container">
+  <div id="form-header">
+    <h2>Welcome Back, my dear friend!</h2>
+    <p>Your live schedule Creator is here</p>
+    <div id="welcome-card">I wish you all the best, Always be Happy :)</div>
+  </div>
 
-        <div id="poster">
-            <div class="poster-header" contenteditable="true">
-                <h1 id="poster-title">Fitness Schedule</h1>
-                <p>Your guide to this week's sessions.</p>
-            </div>
-            <div id="schedule-list" class="schedule-list"></div>
-            <div class="poster-footer">
-                <button id="student-save-btn" class="button button-primary">Save for Offline</button>
-            </div>
-        </div>
+  <div id="data-entry-form">
+    <div class="form-grid">
+      <div class="input-group"><label for="date">Date</label><input type="date" id="date"></div>
+      <div class="input-group"><label for="day">Day</label><input type="text" id="day" placeholder="Auto-filled" readonly></div>
+      <div class="input-group"><label for="time">Time</label><div class="time-selector"><input type="time" id="time"><select id="time-ampm"><option value="AM">AM</option><option value="PM">PM</option></select></div></div>
+      <div class="input-group"><label for="class-type">Class Type</label><input type="text" id="class-type" placeholder="e.g., Yoga, HIIT"></div>
+      <div class="input-group"><label for="focus-of-day">Focus of the Day</label><input type="text" id="focus-of-day" placeholder="e.g., Core Strength"></div>
+      <div class="input-group"><label for="link">Meeting Link</label><input type="url" id="link" placeholder="https://..."></div>
     </div>
+    <div class="form-actions">
+      <button id="addSession" class="button button-primary">Add Session</button>
+      <button id="teacher-share-btn" class="button">Share Schedule</button>
+    </div>
+  </div>
+
+  <div id="poster">
+    <div class="poster-header" contenteditable="true">
+      <h1 id="poster-title">Fitness Schedule</h1>
+      <p>Your guide to this week's sessions.</p>
+    </div>
+    <div id="schedule-list" class="schedule-list"></div>
+    <div class="poster-footer">
+      <button id="student-save-btn" class="button button-primary">Save for Offline</button>
+    </div>
+  </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const scheduleList = document.getElementById('schedule-list');
-    const poster = document.getElementById('poster');
-    const addSessionBtn = document.getElementById('addSession');
-    const teacherShareBtn = document.getElementById('teacher-share-btn');
-    const studentSaveBtn = document.getElementById('student-save-btn');
-    const dataEntryForm = document.getElementById('data-entry-form');
-    const dateInput = document.getElementById('date');
-    const dayInput = document.getElementById('day');
-    const timeInput = document.getElementById('time');
-    const ampmSelect = document.getElementById('time-ampm');
-    const welcomeCard = document.getElementById('welcome-card');
+  const scheduleList = document.getElementById('schedule-list');
+  const poster = document.getElementById('poster');
+  const addSessionBtn = document.getElementById('addSession');
+  const teacherShareBtn = document.getElementById('teacher-share-btn');
+  const studentSaveBtn = document.getElementById('student-save-btn');
+  const dateInput = document.getElementById('date');
+  const dayInput = document.getElementById('day');
+  const timeInput = document.getElementById('time');
+  const ampmSelect = document.getElementById('time-ampm');
+  const welcomeCard = document.getElementById('welcome-card');
 
-    const isStudentView = new URLSearchParams(window.location.search).get('view') === 'student';
+  const urlParams = new URLSearchParams(window.location.search);
+  const isStudentView = urlParams.get('view') === 'student';
 
-    if (isStudentView || sessionStorage.getItem('welcomeShown')) {
-        welcomeCard.style.display = 'none';
+  if (isStudentView) document.body.classList.add('student-view');
+  if (isStudentView || sessionStorage.getItem('welcomeShown')) welcomeCard.style.display = 'none';
+  else sessionStorage.setItem('welcomeShown', 'true');
+
+  dateInput.addEventListener('change', () => {
+    dayInput.value = dateInput.value ? new Date(dateInput.value + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' }) : '';
+  });
+
+  const getCurrentScheduleData = () => ({
+    title: poster.querySelector('h1').innerHTML,
+    subtitle: poster.querySelector('p').innerHTML,
+    sessions: Array.from(scheduleList.querySelectorAll('.schedule-card')).map(card => ({
+      date: card.dataset.date, time: card.dataset.time, day: card.querySelector('.day-name').textContent,
+      classType: card.querySelector('h3').textContent, focus: card.querySelector('.card-details p').textContent,
+      link: card.querySelector('a').href
+    }))
+  });
+
+  const saveData = () => { if (!isStudentView) localStorage.setItem('liveScheduleData', JSON.stringify(getCurrentScheduleData())); };
+
+  const createCard = (date, time, day, classType, focus, link, shouldSave = true) => {
+    const card = document.createElement('div');
+    card.className = 'schedule-card';
+    card.dataset.date = date || ''; card.dataset.time = time || '';
+    const formattedDate = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+    const contentEditable = !isStudentView;
+    card.innerHTML = `<div class="card-date-day"><div class="date">${formattedDate}</div><div class="day-name" contenteditable="${contentEditable}">${day||'TBA'}</div></div><div class="card-details"><h3 contenteditable="${contentEditable}">${classType||'TBA'}</h3><p contenteditable="${contentEditable}">${focus||'TBA'}</p><div class="time">${time||'TBA'}</div></div><div class="card-action"><a href="${link||'#'}" target="_blank">Join Class</a></div><button class="delete-btn" title="Delete Session">×</button>`;
+    scheduleList.appendChild(card);
+    card.querySelector('.delete-btn').addEventListener('click', () => { card.remove(); saveData(); });
+    if (contentEditable) card.querySelectorAll('[contenteditable="true"]').forEach(el => el.addEventListener('blur', saveData));
+    if (shouldSave) saveData();
+  };
+    
+  const loadData = () => {
+    const savedData = localStorage.getItem('liveScheduleData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        if (data.title) poster.querySelector('h1').innerHTML = data.title;
+        if (data.subtitle) poster.querySelector('p').innerHTML = data.subtitle;
+        scheduleList.innerHTML = '';
+        if (data.sessions?.length) data.sessions.forEach(s => createCard(s.date, s.time, s.day, s.classType, s.focus, s.link, false));
+        else createCard('2025-09-10', '10:00 AM', 'Welcome!', 'Your First Class', 'Learn the basics', 'https://example.com', false);
     } else {
-        sessionStorage.setItem('welcomeShown', 'true');
+        createCard('2025-09-10', '10:00 AM', 'Welcome!', 'Your First Class', 'Learn the basics', 'https://example.com', false);
     }
+  };
 
-    dateInput.addEventListener('change', () => {
-        if (dateInput.value) {
-            const date = new Date(dateInput.value + 'T00:00:00');
-            dayInput.value = date.toLocaleDateString('en-US', { weekday: 'long' });
-        } else {
-            dayInput.value = '';
-        }
+  addSessionBtn.addEventListener('click', () => {
+    const timeValue = timeInput.value;
+    let formattedTime = 'TBA';
+    if (timeValue) {
+      let [hours, minutes] = timeValue.split(':');
+      formattedTime = `${String(parseInt(hours, 10) % 12 || 12).padStart(2, '0')}:${minutes} ${ampmSelect.value}`;
+    }
+    createCard(dateInput.value, formattedTime, dayInput.value, document.getElementById('class-type').value, document.getElementById('focus-of-day').value, document.getElementById('link').value);
+    document.querySelectorAll('#data-entry-form input:not([readonly]), #data-entry-form select').forEach(input => {
+        input.tagName === 'SELECT' ? input.selectedIndex = 0 : input.value = '';
     });
+  });
 
-    const saveData = () => {
-        if (isStudentView) return;
-        const scheduleData = {
-            title: poster.querySelector('h1').innerHTML,
-            subtitle: poster.querySelector('p').innerHTML,
-            sessions: Array.from(scheduleList.querySelectorAll('.schedule-card')).map(card => ({
-                date: card.dataset.date,
-                time: card.dataset.time,
-                day: card.querySelector('.day-name').textContent,
-                classType: card.querySelector('h3').textContent,
-                focus: card.querySelector('.card-details p').textContent,
-                link: card.querySelector('a').href
-            }))
-        };
-        localStorage.setItem('liveScheduleData', JSON.stringify(scheduleData));
-    };
+  teacherShareBtn.addEventListener('click', async () => {
+    teacherShareBtn.textContent = 'Generating...';
+    teacherShareBtn.disabled = true;
 
-    const loadData = () => {
-        const savedData = localStorage.getItem('liveScheduleData');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            if (data.title) poster.querySelector('h1').innerHTML = data.title;
-            if (data.subtitle) poster.querySelector('p').innerHTML = data.subtitle;
-            scheduleList.innerHTML = '';
-            if (data.sessions && data.sessions.length > 0) {
-                 data.sessions.forEach(s => createCard(s.date, s.time, s.day, s.classType, s.focus, s.link, false));
-            } else {
-                 createCard('2025-09-10', '10:00 AM', 'Welcome!', 'Your First Class', 'Learn the basics', 'https://example.com', false);
-            }
-        } else {
-             createCard('2025-09-10', '10:00 AM', 'Welcome!', 'Your First Class', 'Learn the basics', 'https://example.com', false);
-        }
-    };
-
-    const createCard = (date, time, day, classType, focus, link, shouldSave = true) => {
-        const card = document.createElement('div');
-        card.className = 'schedule-card';
-        card.dataset.date = date || '';
-        card.dataset.time = time || '';
-        
-        let formattedDate = '';
-        if (date) {
-            try {
-                const d = new Date(date + 'T00:00:00');
-                formattedDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            } catch (e) { console.error("Invalid date:", date); }
-        }
-
-        card.innerHTML = `
-            <div class="card-date-day">
-                <div class="date">${formattedDate}</div>
-                <div class="day-name" contenteditable="true">${day||'TBA'}</div>
+    try {
+      const scheduleData = getCurrentScheduleData();
+      
+      const studentHTML = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${scheduleData.title}</title>
+          <style>${document.querySelector('style').innerHTML}</style>
+          <style>.delete-btn, [contenteditable] { display: none !important; }</style>
+        </head>
+        <body>
+          <div class="container">
+            <div id="poster">
+              <div class="poster-header">
+                <h1>${scheduleData.title}</h1>
+                <p>${scheduleData.subtitle}</p>
+              </div>
+              <div class="schedule-list">
+                ${scheduleList.innerHTML}
+              </div>
             </div>
-            <div class="card-details">
-                <h3 contenteditable="true">${classType||'TBA'}</h3>
-                <p contenteditable="true">${focus||'TBA'}</p>
-                <div class="time">${time||'TBA'}</div>
-            </div>
-            <div class="card-action">
-                <a href="${link||'#'}" target="_blank">Join Class</a>
-            </div>
-            <button class="delete-btn" title="Delete Session">×</button>`;
-        
-        scheduleList.appendChild(card);
-        card.querySelector('.delete-btn').addEventListener('click', () => { card.remove(); saveData(); });
-        card.querySelectorAll('[contenteditable="true"]').forEach(el => el.addEventListener('blur', saveData));
-        if (shouldSave) saveData();
-    };
+          </div>
+        </body>
+        </html>
+      `;
+      
+      // --- THE FINAL FIX IS HERE ---
+      // Create a filename from the schedule's main title.
+      // Replace spaces with underscores and remove characters that aren't filename-safe.
+      const fileName = `${scheduleData.title.replace(/ /g, '_').replace(/[\\?%*:|"<>]/g, '')}.html`;
+      const scheduleFile = new File([studentHTML], fileName, { type: "text/html" });
 
-    addSessionBtn.addEventListener('click', () => {
-        const timeValue = timeInput.value;
-        let formattedTime = 'TBA';
-        if (timeValue) {
-            let [hours, minutes] = timeValue.split(':');
-            hours = parseInt(hours, 10);
-            
-            let displayHours = hours % 12 || 12;
-            formattedTime = `${String(displayHours).padStart(2, '0')}:${minutes} ${ampmSelect.value}`;
-        }
-        
-        createCard(
-            dataEntryForm.querySelector('#date').value,
-            formattedTime,
-            dataEntryForm.querySelector('#day').value,
-            dataEntryForm.querySelector('#class-type').value,
-            dataEntryForm.querySelector('#focus-of-day').value,
-            dataEntryForm.querySelector('#link').value
-        );
-        dataEntryForm.querySelectorAll('input, select').forEach(input => {
-            if(input.type !== 'text' || !input.readOnly) {
-                if (input.type === 'select-one') {
-                    input.selectedIndex = 0;
-                } else {
-                    input.value = '';
-                }
-            }
+      if (navigator.canShare && navigator.canShare({ files: [scheduleFile] })) {
+        await navigator.share({
+          files: [scheduleFile],
+          title: scheduleData.title,
+          text: 'Here is our new fitness schedule!'
         });
-    });
+      } else {
+        alert("This browser doesn't support sharing files. Please try the 'Save for Offline' button.");
+      }
 
-    teacherShareBtn.addEventListener('click', async () => {
-        const studentURL = new URL(window.location.href);
-        studentURL.searchParams.set('view', 'student');
-        try {
-            await navigator.share({ title: poster.querySelector('h1').textContent, text: "Here is our fitness class schedule!", url: studentURL.href });
-        } catch (err) {
-            navigator.clipboard.writeText(studentURL.href);
-            alert("Student link copied to clipboard! You can now paste it to share.");
-        }
-    });
-
-    studentSaveBtn.addEventListener('click', () => {
-        const pageHTML = document.documentElement.outerHTML;
-        const blob = new Blob([pageHTML], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'fitness-schedule.html';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-
-    poster.querySelectorAll('[contenteditable="true"]').forEach(el => el.addEventListener('blur', saveData));
-
-    if (isStudentView) {
-        document.body.classList.add('student-view');
-        document.querySelectorAll('[contenteditable]').forEach(el => el.setAttribute('contenteditable', 'false'));
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Failed to share the file:', error);
+        alert(`Could not share the file: ${error.message}`);
+      }
+    } finally {
+      teacherShareBtn.textContent = 'Share Schedule';
+      teacherShareBtn.disabled = false;
     }
+  });
 
-    loadData();
+  studentSaveBtn.addEventListener('click', () => {
+    const posterClone = document.documentElement.cloneNode(true);
+    posterClone.querySelector('#form-header')?.remove();
+    posterClone.querySelector('#data-entry-form')?.remove();
+    posterClone.querySelector('#student-save-btn')?.remove();
+    posterClone.querySelectorAll('.delete-btn').forEach(btn => btn.remove());
+    posterClone.querySelectorAll('[contenteditable="true"]').forEach(el => el.setAttribute('contenteditable', 'false'));
+    posterClone.querySelector('script')?.remove();
+    const pageHTML = posterClone.outerHTML;
+    const blob = new Blob([pageHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${poster.querySelector('h1').textContent.replace(/ /g, '_')}.html`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  loadData();
 });
 </script>
 </body>
