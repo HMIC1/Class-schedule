@@ -8,16 +8,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
         :root {
-            --primary-color: #778BEB;   /* Pastel Blue */
-            --secondary-color: #F3A683; /* Pastel Coral */
-            /* -- NEW: Calm Cerulean Blue for Teacher Header -- */
-            --teacher-header-bg: #A2D2FF; 
-            --header-bg: #E4D8DC;       /* Pastel Lavender */
-            --success-color: #55E6C1;   /* Pastel Green */
-            --background-color: #f5f7fa;
-            --card-color: #ffffff;
-            --text-color: #34495e;
-            --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+    --primary-color: linear-gradient(45deg, #778BEB, #A2D2FF); /* Pastel Blue Gradient */
+    --secondary-color: linear-gradient(45deg, #F3A683, #FFD6A5); /* Pastel Coral Gradient */
+    --teacher-header-bg: linear-gradient(45deg, #A2D2FF, #BDE0FE); /* Calm Cerulean Gradient */
+    --header-bg: linear-gradient(45deg, #E4D8DC, #F1E1E8); /* Pastel Lavender Gradient */
+    --success-color: linear-gradient(45deg, #55E6C1, #9BF6FF); /* Pastel Green Gradient */
+    --background-color: linear-gradient(45deg, #f5f7fa, #e0eafc); /* Soft Background Gradient */
+    --card-color: linear-gradient(45deg, #ffffff, #f8f9fa); /* White to Light Grey Gradient */
+    --text-color: #34495e; /* Keep solid for readability */
+    --shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
         }
 
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 2rem; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
